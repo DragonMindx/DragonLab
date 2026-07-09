@@ -5,7 +5,7 @@ import Sidebar from "../../components/Sidebar.astro";
 import Footer from "../../components/Footer.astro";
 import { getCollection, type CollectionKey } from "astro:content";
 
-const collections = ["cs", "reading", "econ", "research", "blog"] as const;
+const collections = ["cs","ml","ds","reading","econ","research","blog"] as const;
 
 const allPosts = (await Promise.all(
   collections.map((c) => getCollection(c))

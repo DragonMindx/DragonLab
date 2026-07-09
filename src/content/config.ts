@@ -14,6 +14,8 @@ const postSchema = z.object({
 
 export const collections = {
   cs: defineCollection({ schema: postSchema }),
+  ml: defineCollection({ schema: postSchema }),
+  ds: defineCollection({ schema: postSchema }),
   reading: defineCollection({ schema: postSchema }),
   econ: defineCollection({ schema: postSchema }),
   research: defineCollection({ schema: postSchema }),

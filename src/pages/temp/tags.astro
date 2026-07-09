@@ -5,7 +5,7 @@ import Sidebar from "../../components/Sidebar.astro";
 import Footer from "../../components/Footer.astro";
 import { getCollection } from "astro:content";
 
-const collections = ["cs", "reading", "econ", "research", "blog"] as const;
+const collections = ["cs","ml","ds","reading","econ","research","blog"] as const;
 const allTags = new Map<string, { collection: string; slug: string; title: string }[]>();
 for (const c of collections) {
   for (const post of await getCollection(c)) {

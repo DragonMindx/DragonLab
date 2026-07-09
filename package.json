@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build"
+    "build": "astro build",
+    "sync-server": "node scripts/sync-server.js"
   },
   "dependencies": {
     "astro": "^5.7.0"

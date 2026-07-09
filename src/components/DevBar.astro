@@ -9,13 +9,24 @@
   <a href="/DragonLab/temp/tags" style="color:var(--color-accent);">Tags</a>
   <a href="/DragonLab/blog/" style="color:var(--color-accent);">Blog</a>
   <a href="/DragonLab/cs/" style="color:var(--color-accent);">CS</a>
-  <span style="margin-left:auto;opacity:0.5;">{new Date().toLocaleTimeString()}</span>
+  <button id="sync-vault" style="background:none;border:1px solid var(--color-accent);color:var(--color-accent);border-radius:4px;padding:0 8px;cursor:pointer;font-family:monospace;">Sync Vault</button>
+  <span id="sync-status" style="opacity:0.5;"></span>
 </div>
 <script>
-  function update() {
-    var w = document.getElementById('dev-width');
-    if (w) w.textContent = window.innerWidth + 'px';
-  }
-  window.addEventListener('resize', update);
-  update();
+  var w = document.getElementById('dev-width');
+  function updateW() { if (w) w.textContent = window.innerWidth + 'px'; }
+  window.addEventListener('resize', updateW); updateW();
+
+  var btn = document.getElementById('sync-vault');
+  var status = document.getElementById('sync-status');
+  btn?.addEventListener('click', function() {
+    status.textContent = 'Syncing...';
+    fetch('http://localhost:3456/sync', { method: 'POST' })
+      .then(r => r.json()).then(d => {
+        status.textContent = d.ok
+          ? ' Copied: ' + (d.copied||[]).length + ' Skipped: ' + (d.skipped||[]).length
+          : ' Error: ' + d.error;
+      })
+      .catch(() => { status.textContent = ' Sync server offline'; });
+  });
 </script>

@@ -1,0 +1,14 @@
+{
+  "vaultPath": "D:/Desktop/git demo/Web V2/WebPage",
+  "websiteContentPath": "D:/Desktop/git demo/Web V2/src/content",
+  "mapping": {
+    "CS": "cs",
+    "ML": "ml",
+    "DS": "ds",
+    "Reading": "reading",
+    "Economics": "econ",
+    "Research": "research",
+    "Journal": "blog"
+  },
+  "autoGit": false
+}
