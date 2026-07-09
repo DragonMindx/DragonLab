@@ -1,0 +1,21 @@
+<div id="dev-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:9999;
+  background:rgba(45,55,72,0.92);color:#e2e8f0;font-size:0.75rem;
+  padding:4px 16px;display:flex;gap:16px;align-items:center;
+  font-family:monospace;backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,0.1);">
+  <span>🛠 DragonLab Dev</span>
+  <span id="dev-width">---</span>
+  <a href="/DragonLab/" style="color:var(--color-accent);">Home</a>
+  <a href="/DragonLab/temp/" style="color:var(--color-accent);">Temp</a>
+  <a href="/DragonLab/temp/tags" style="color:var(--color-accent);">Tags</a>
+  <a href="/DragonLab/blog/" style="color:var(--color-accent);">Blog</a>
+  <a href="/DragonLab/cs/" style="color:var(--color-accent);">CS</a>
+  <span style="margin-left:auto;opacity:0.5;">{new Date().toLocaleTimeString()}</span>
+</div>
+<script>
+  function update() {
+    var w = document.getElementById('dev-width');
+    if (w) w.textContent = window.innerWidth + 'px';
+  }
+  window.addEventListener('resize', update);
+  update();
+</script>

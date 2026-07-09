@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import DevBar from "../components/DevBar.astro";
 const { title = "DragonLab" } = Astro.props;
 ---
 <!DOCTYPE html>
@@ -19,5 +20,6 @@ const { title = "DragonLab" } = Astro.props;
     <slot />
     <script is:inline src="/DragonLab/scripts/theme.js"></script>
     <script is:inline src="/DragonLab/scripts/app.js"></script>
+    {import.meta.env.DEV && <DevBar />}
   </body>
 </html>
