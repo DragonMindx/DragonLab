@@ -1,0 +1,26 @@
+---
+import TempLayout from "../../layouts/TempLayout.astro";
+import Header from "../../components/Header.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import Footer from "../../components/Footer.astro";
+---
+
+<TempLayout title="About | DragonLab">
+  <Header />
+  <div class="page-wrapper">
+    <main class="content-area">
+      <div class="card">
+        <header class="article-header">
+          <h1 class="article-title">About</h1>
+        </header>
+        <div class="article-content">
+          <p>DragonLab's personal notebook.</p>
+          <p>Areas: CS, Reading, Economics, Research, and more.</p>
+          <p>Built with <a href="https://astro.build">Astro</a> + TypeScript.</p>
+        </div>
+      </div>
+    </main>
+    <Sidebar posts={[]} />
+  </div>
+  <Footer />
+</TempLayout>

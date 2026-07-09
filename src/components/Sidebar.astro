@@ -1,0 +1,40 @@
+---
+const { posts } = Astro.props as { posts: { url: string; title: string }[] };
+---
+<aside class="sidebar">
+  <div class="card sidebar-card">
+    <div class="profile-avatar">🐉</div>
+    <div class="profile-name">DragonMind</div>
+    <div class="profile-bio" style="color:var(--color-text-light);font-weight:400;">Mens et Manus</div>
+    <div class="profile-bio">
+      Computer&nbsp;&nbsp;Science&nbsp;&nbsp;Undergraduate<br>
+      AI &middot; Complex Systems &middot; Research
+    </div>
+  </div>
+  <div class="card sidebar-card">
+    <p class="muted" style="font-size:1rem;line-height:2;font-weight:600;">
+      Computer Science undergraduate.<br><br>
+      Interested in<br>
+      AI &middot; Data Science<br>
+      Complex Systems &middot; Embodied Intelligence<br><br>
+      Learning by building,<br>
+      researching, and writing.<br><br>
+      Exploring economics,<br>
+      history, and capital markets.
+    </p>
+  </div>
+  <div class="card sidebar-card">
+    <div class="sidebar-title">Theme</div>
+    <button id="themeToggle" class="theme-btn">🌙 Dark</button>
+  </div>
+  {posts?.length > 0 && (
+    <div class="card sidebar-card">
+      <div class="sidebar-title">Recent Posts</div>
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li><a href={post.url}>{post.title}</a></li>
+        ))}
+      </ul>
+    </div>
+  )}
+</aside>

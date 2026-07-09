@@ -1,0 +1,73 @@
+---
+import TempLayout from "../../layouts/TempLayout.astro";
+import Header from "../../components/Header.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection, type CollectionKey } from "astro:content";
+
+const collections = ["cs", "reading", "econ", "research", "blog"] as const;
+
+const allPosts = (await Promise.all(
+  collections.map((c) => getCollection(c))
+)).flat().sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const recent: { url: string; title: string }[] = [];
+const milestones: { date: string; posts: { url: string; title: string; date: string; collection: string; tags: string[]; body: string }[] }[] = [];
+let currentDate = "";
+let currentGroup: typeof milestones[0]["posts"] = [];
+
+for (const post of allPosts) {
+  const d = post.data.date.toISOString().slice(0, 10);
+  if (d !== currentDate) {
+    if (currentGroup.length) milestones.push({ date: currentDate, posts: currentGroup });
+    currentDate = d;
+    currentGroup = [];
+  }
+  currentGroup.push({
+    url: `/DragonLab/temp/${post.collection}/${post.slug}/`,
+    title: post.data.title,
+    date: d,
+    collection: post.collection,
+    tags: post.data.tags || [],
+    body: post.body || "",
+  });
+}
+if (currentGroup.length) milestones.push({ date: currentDate, posts: currentGroup });
+
+for (const post of allPosts.slice(0, 5)) {
+  recent.push({ url: `/DragonLab/temp/${post.collection}/${post.slug}/`, title: post.data.title });
+}
+---
+
+<TempLayout title="DragonLab (Temp)">
+  <Header />
+  <div class="page-wrapper">
+    <main class="content-area">
+      <div class="card" style="text-align:center;">
+        <p class="motto">Mens et Manus</p>
+      </div>
+      {milestones.map((m) => (
+        <>
+          <div class="milestone">
+            <span class="milestone-date">{m.date}</span>
+            <i class="milestone-arrow"></i>
+            <span class="milestone-line"></span>
+          </div>
+          {m.posts.map((p) => (
+            <article class="card post-list-item">
+              <h2><a href={p.url}>{p.title}</a></h2>
+              <div class="post-meta">
+                <span>{p.date}</span>
+                {p.collection && <span>&middot; {p.collection}</span>}
+                {p.tags?.length > 0 && p.tags.map((t: string) => <a class="tag" href={`/DragonLab/temp/tags#${t}`}>{t}</a>)}
+              </div>
+              {p.body && <p class="post-excerpt">{p.body.slice(0, 140).replace(/#{1,6}\s/g,'').slice(0,120)}&hellip;</p>}
+            </article>
+          ))}
+        </>
+      ))}
+    </main>
+    <Sidebar posts={recent} />
+  </div>
+  <Footer />
+</TempLayout>

@@ -1,0 +1,71 @@
+---
+import TempLayout from "../../../layouts/TempLayout.astro";
+import Header from "../../../components/Header.astro";
+import Sidebar from "../../../components/Sidebar.astro";
+import Footer from "../../../components/Footer.astro";
+import Giscus from "../../../components/Giscus.astro";
+import MathJax from "../../../components/MathJax.astro";
+import PostNav from "../../../components/PostNav.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const keys = ["cs", "reading", "econ", "research", "blog"] as const;
+  const paths: { params: { collection: string; slug: string } }[] = [];
+  for (const k of keys) {
+    const posts = await getCollection(k);
+    for (const post of posts) {
+      paths.push({ params: { collection: k, slug: post.slug } });
+    }
+  }
+  return paths;
+}
+
+const { collection, slug } = Astro.params as { collection: string; slug: string };
+const posts = await getCollection(collection as "cs" | "reading" | "econ" | "research" | "blog");
+const post = posts.find((p) => p.slug === slug);
+if (!post) return Astro.redirect("/Learning-Blog/404/");
+
+const all = (await Promise.all(
+  (["cs","reading","econ","research","blog"] as const).map((c) => getCollection(c))
+)).flat().sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const idx = all.findIndex((p) => p.collection === collection && p.slug === slug);
+const prev = idx > 0 ? all[idx - 1] : null;
+const next = idx < all.length - 1 ? all[idx + 1] : null;
+
+const { Content } = await post.render();
+---
+
+<TempLayout title={`${post.data.title} | DragonLab`}>
+  <Header />
+  <div class="page-wrapper">
+    <main class="content-area">
+      <article class="card">
+        <header class="article-header">
+          <h1 class="article-title">{post.data.title}</h1>
+          <div class="post-meta">
+            <span>{post.data.date.toISOString().slice(0, 10)}</span>
+            <span>&middot; {collection}</span>
+          </div>
+          {post.data.tags?.length > 0 && (
+            <div class="post-tags">
+              {post.data.tags.map((t: string) => <a class="tag" href={`/Learning-Blog/temp/tags#${t}`}>{t}</a>)}
+            </div>
+          )}
+        </header>
+        <div class="article-content">
+          <Content />
+        </div>
+      </article>
+      <PostNav
+        post={{ url: `/Learning-Blog/temp/${collection}/${slug}/`, title: post.data.title, date: post.data.date }}
+        prev={prev ? { url: `/Learning-Blog/temp/${prev.collection}/${prev.slug}/`, title: prev.data.title, date: prev.data.date } : null}
+        next={next ? { url: `/Learning-Blog/temp/${next.collection}/${next.slug}/`, title: next.data.title, date: next.data.date } : null}
+      />
+      <Giscus />
+    </main>
+    <Sidebar posts={all.slice(0, 5).map((p) => ({ url: `/Learning-Blog/temp/${p.collection}/${p.slug}/`, title: p.data.title }))} />
+  </div>
+  <Footer />
+  {post.data.mathjax && <MathJax />}
+</TempLayout>

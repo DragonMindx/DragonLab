@@ -1,0 +1,30 @@
+---
+import TempLayout from "../../layouts/TempLayout.astro";
+import Header from "../../components/Header.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+const collections = ["cs", "reading", "econ", "research", "blog"] as const;
+const catData: { name: string; count: number; url: string }[] = [];
+for (const c of collections) {
+  const posts = await getCollection(c);
+  catData.push({ name: c, count: posts.length, url: `/DragonLab/temp/#${c}` });
+}
+---
+
+<TempLayout title="Categories | DragonLab">
+  <Header />
+  <div class="page-wrapper">
+    <main class="content-area">
+      <div class="card"><h1 class="article-title">Categories (Collections)</h1><div class="post-meta">{collections.length} areas</div></div>
+      {catData.map((cat) => (
+        <div class="card" id={cat.name}>
+          <h2 style="font-size:1.2rem;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--color-border);"><a href={cat.url}>{cat.name}</a><small class="muted"> ({cat.count} posts)</small></h2>
+        </div>
+      ))}
+    </main>
+    <Sidebar posts={[]} />
+  </div>
+  <Footer />
+</TempLayout>

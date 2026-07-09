@@ -1,0 +1,21 @@
+---
+interface Post {
+  url: string; title: string; date: Date;
+  series?: string; series_index?: number;
+}
+const { post, prev, next } = Astro.props as { post: Post; prev: Post | null; next: Post | null };
+---
+{(prev || next) && (
+  <nav class="card post-nav">
+    <div style="flex:1;">
+      {prev && (
+        <><small class="muted">&larr; Prev</small><br/><a href={prev.url}>{prev.title}</a></>
+      )}
+    </div>
+    <div style="flex:1;text-align:right;">
+      {next && (
+        <><small class="muted">Next &rarr;</small><br/><a href={next.url}>{next.title}</a></>
+      )}
+    </div>
+  </nav>
+)}

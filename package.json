@@ -1,0 +1,12 @@
+{
+  "name": "dragon-heart",
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build"
+  },
+  "dependencies": {
+    "astro": "^5.7.0"
+  }
+}

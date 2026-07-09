@@ -1,0 +1,40 @@
+---
+import TempLayout from "../../layouts/TempLayout.astro";
+import Header from "../../components/Header.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+const collections = ["cs", "reading", "econ", "research", "blog"] as const;
+const allTags = new Map<string, { collection: string; slug: string; title: string }[]>();
+for (const c of collections) {
+  for (const post of await getCollection(c)) {
+    for (const tag of post.data.tags || []) {
+      if (!allTags.has(tag)) allTags.set(tag, []);
+      allTags.get(tag)!.push({ collection: c, slug: post.slug, title: post.data.title });
+    }
+  }
+}
+const sorted = [...allTags.entries()].sort((a, b) => b[1].length - a[1].length);
+---
+
+<TempLayout title="Tags | DragonLab">
+  <Header />
+  <div class="page-wrapper">
+    <main class="content-area">
+      <div class="card"><h1 class="article-title">All Tags</h1><div class="post-meta">{allTags.size} tags</div></div>
+      {sorted.map(([tag, posts]) => (
+        <div class="card" id={tag}>
+          <h2 style="font-size:1.2rem;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--color-border);">{tag} <small class="muted">({posts.length})</small></h2>
+          <ul class="post-list">
+            {posts.map((p) => (
+              <li><a href={`/DragonLab/temp/${p.collection}/${p.slug}/`}>{p.title}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </main>
+    <Sidebar posts={[]} />
+  </div>
+  <Footer />
+</TempLayout>

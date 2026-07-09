@@ -1,0 +1,55 @@
+---
+import TempLayout from "../../layouts/TempLayout.astro";
+import Header from "../../components/Header.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+const sorted = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const recent = sorted.slice(0, 5).map(p => ({ url: `/DragonLab/temp/${p.collection}/${p.slug}/`, title: p.data.title }));
+
+let currentDate = "";
+const milestones: { date: string; posts: typeof sorted }[] = [];
+let group: typeof sorted = [];
+for (const p of sorted) {
+  const d = p.data.date.toISOString().slice(0, 10);
+  if (d !== currentDate) {
+    if (group.length) milestones.push({ date: currentDate, posts: group });
+    currentDate = d; group = [];
+  }
+  group.push(p);
+}
+if (group.length) milestones.push({ date: currentDate, posts: group });
+---
+
+<TempLayout title="Blog | DragonLab">
+  <Header />
+  <div class="page-wrapper">
+    <main class="content-area">
+      <div class="card"><h1 class="article-title">Blog</h1><div class="post-meta">{sorted.length} posts</div></div>
+      {milestones.map((m) => (
+        <>
+          <div class="milestone">
+            <span class="milestone-date">{m.date}</span>
+            <i class="milestone-arrow"></i>
+            <span class="milestone-line"></span>
+          </div>
+          {m.posts.map((p) => (
+            <article class="card post-list-item">
+              <h2><a href={`/DragonLab/temp/${p.collection}/${p.slug}/`}>{p.data.title}</a></h2>
+              <div class="post-meta">
+                <span>{p.data.date.toISOString().slice(0, 10)}</span>
+                <span>&middot; blog</span>
+                {p.data.tags?.length > 0 && p.data.tags.map((t: string) => <a class="tag" href={`/DragonLab/temp/tags#${t}`}>{t}</a>)}
+              </div>
+              {p.body && <p class="post-excerpt">{p.body.slice(0, 140).replace(/#{1,6}\s/g,'').slice(0,120)}&hellip;</p>}
+            </article>
+          ))}
+        </>
+      ))}
+    </main>
+    <Sidebar posts={recent} />
+  </div>
+  <Footer />
+</TempLayout>
