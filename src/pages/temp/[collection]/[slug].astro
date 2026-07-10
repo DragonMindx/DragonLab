@@ -8,11 +8,15 @@ import MathJax from "../../../components/MathJax.astro";
 import PostNav from "../../../components/PostNav.astro";
 import { getCollection } from "astro:content";
 
+async function safeGetCollection(key: string) {
+  try { return await getCollection(key as any); } catch { return [] as any[]; }
+}
+
 export async function getStaticPaths() {
   const keys = ["cs","ml","ds","reading","econ","research","blog"] as const;
   const paths: { params: { collection: string; slug: string } }[] = [];
   for (const k of keys) {
-    const posts = await getCollection(k);
+    const posts = await safeGetCollection(k);
     for (const post of posts) {
       paths.push({ params: { collection: k, slug: post.slug } });
     }
@@ -21,12 +25,12 @@ export async function getStaticPaths() {
 }
 
 const { collection, slug } = Astro.params as { collection: string; slug: string };
-const posts = await getCollection(collection as "cs"|"ml"|"ds"|"reading"|"econ"|"research"|"blog");
+const posts = await safeGetCollection(collection);
 const post = posts.find((p) => p.slug === slug);
 if (!post) return Astro.redirect("/DragonLab/404/");
 
 const all = (await Promise.all(
-  (["cs","ml","ds","reading","econ","research","blog"] as const).map((c) => getCollection(c))
+  (["cs","ml","ds","reading","econ","research","blog"] as const).map((c) => safeGetCollection(c))
 )).flat().sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const idx = all.findIndex((p) => p.collection === collection && p.slug === slug);

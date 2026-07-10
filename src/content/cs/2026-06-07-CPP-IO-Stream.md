@@ -1,8 +1,9 @@
 ---
-title:  "学习笔记-C++ IO流（补档）"
-date:   2026-06-07 00:00:00 +0800
+title: 学习笔记-C++ IO流（补档）
+date: 2026-06-07 00:00:00 +0800
 categories: CS
-tags: cpp iostream
+tags:
+  - CPP
 ---
 
 ### 2/6/2026

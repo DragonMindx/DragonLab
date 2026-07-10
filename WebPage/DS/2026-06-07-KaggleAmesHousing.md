@@ -211,7 +211,7 @@ StandardScaler + 大幅降低 α（从 1.0 降至 0.009）使 R² 提升约 10 �
 
 到现在的两代：
 
-## Mk1: 对数化处理长尾+FillNaN+One-Hot编码+ElasticNet
+### Mk1: 对数化处理长尾+FillNaN+One-Hot编码+ElasticNet
 
 ### R²=0.7676 ± 0.0971 。 基础pipeline是完成的。打算进一步优化。
 
@@ -229,6 +229,6 @@ StandardScaler + 大幅降低 α（从 1.0 降至 0.009）使 R² 提升约 10 �
 
 实际上，一开始提出的热力图/交叉验证/非线性建模，被证明是：
 
-# 在ElasticNet的正则化神力下，老手工艺人还是算了
+### 在ElasticNet的正则化神力下，老手工艺人还是算了
 
 乱七八糟就乱七八糟吧。AI时代人类最珍贵的品质当然包括出格了（bushi

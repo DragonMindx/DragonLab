@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "sync": "node -e \"import('./scripts/sync-vault.js').then(m => console.log(JSON.stringify(m.sync(),null,2)))\"",
+    "supervise": "node scripts/supervise.js",
     "sync-server": "node scripts/sync-server.js"
   },
   "dependencies": {
