@@ -153,6 +153,7 @@ html.dark .profile-avatar::before { opacity:1; }
 
 /* ===== Comments ===== */
 .comments-section { margin-top:32px; }
+.section-empty-card { text-align:center; padding:48px; }
 
 /* ===== Tags ===== */
 .tag { display:inline-block; padding:0 6px; font-size:0.8rem; color:var(--color-accent); transition:color 0.2s ease; }
@@ -167,6 +168,8 @@ html.dark .profile-avatar::before { opacity:1; }
 .section-header h2 small { font-weight:400; margin-left:6px; }
 .section-more { font-size:0.85rem; color:var(--color-accent); }
 .section-more:hover { text-decoration:underline; }
+.section-page-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.section-page-wrapper { flex: 1; width: 100%; }
 .dashboard-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin-bottom:12px; }
 .domain-bar-section { margin-top:28px; }
 .domain-bar-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-top:14px; }
@@ -265,6 +268,8 @@ html.dark .nav-links a:hover { color:#a4cdf6; }
   .domain-grid { grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); }
   .domain-bar-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
+
+
 
 
 

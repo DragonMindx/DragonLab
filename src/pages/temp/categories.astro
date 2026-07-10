@@ -1,15 +1,15 @@
----
+﻿---
 import TempLayout from "../../layouts/TempLayout.astro";
 import Header from "../../components/Header.astro";
 import Sidebar from "../../components/Sidebar.astro";
 import Footer from "../../components/Footer.astro";
-import { getCollection } from "astro:content";
+import { DOMAINS, DOMAIN_KEYS } from "../../data/domains";
+import { safeGetCollection } from "../../utils/content";
 
-const collections = ["cs","ml","ds","reading","econ","research","blog"] as const;
 const catData: { name: string; count: number; url: string }[] = [];
-for (const c of collections) {
-  const posts = await getCollection(c);
-  catData.push({ name: c, count: posts.length, url: `/DragonLab/temp/#${c}` });
+for (const key of DOMAIN_KEYS) {
+  const posts = await safeGetCollection(key);
+  catData.push({ name: DOMAINS.find(d => d.key === key)!.name, count: posts.length, url: `/DragonLab/${key}/` });
 }
 ---
 
@@ -17,7 +17,7 @@ for (const c of collections) {
   <Header />
   <div class="page-wrapper">
     <main class="content-area">
-      <div class="card"><h1 class="article-title">Categories (Collections)</h1><div class="post-meta">{collections.length} areas</div></div>
+      <div class="card"><h1 class="article-title">Categories (Collections)</h1><div class="post-meta">{catData.length} areas</div></div>
       {catData.map((cat) => (
         <div class="card" id={cat.name}>
           <h2 style="font-size:1.2rem;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--color-border);"><a href={cat.url}>{cat.name}</a><small class="muted"> ({cat.count} posts)</small></h2>
@@ -28,3 +28,6 @@ for (const c of collections) {
   </div>
   <Footer />
 </TempLayout>
+
+
+

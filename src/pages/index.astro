@@ -11,27 +11,18 @@ async function safeGetCollection(key: string) {
 
 import statusData from "../data/status.json";
 import DomainBar from "../components/DomainBar.astro";
+import { DOMAINS } from "../data/domains";
 const status = { emoji: "📢", text: "Welcome to DragonLab", ...statusData };
-
-const domains = [
-  { key: "cs", icon: "💻", name: "CS", desc: "Computer Science" },
-  { key: "ml", icon: "🧠", name: "ML", desc: "Machine Learning" },
-  { key: "ds", icon: "📊", name: "DS", desc: "Data Science" },
-  { key: "reading", icon: "📚", name: "Reading", desc: "Books & Essays" },
-  { key: "blog", icon: "📝", name: "Blog", desc: "General Posts" },
-  { key: "research", icon: "🔬", name: "Research", desc: "Math Modeling" },
-  { key: "econ", icon: "📈", name: "Econ", desc: "Economics" },
-];
 
 // Gather all posts for recent activity & domain feeds
 const allPosts = (await Promise.all(
-  domains.map(d => safeGetCollection(d.key))
+  DOMAINS.map(d => safeGetCollection(d.key))
 )).flat().sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const recentPosts = allPosts.slice(0, 6);
 
 const domainFeeds = await Promise.all(
-  domains.map(async (d) => {
+  DOMAINS.map(async (d) => {
     const posts = await safeGetCollection(d.key);
     const latest = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
     return { ...d, latest };

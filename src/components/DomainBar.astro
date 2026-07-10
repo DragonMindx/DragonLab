@@ -1,62 +1,27 @@
-﻿<section class="domain-bar-section">
+﻿---
+import { DOMAINS } from "../data/domains";
+---
+
+<section class="domain-bar-section">
   <div class="section-header">
     <h2>Domains</h2>
   </div>
   <div class="domain-bar-grid">
-    <a class="dashboard-card domain-bar-card" href="/DragonLab/cs/">
-      <div class="domain-card-icon">💻</div>
-      <div class="domain-card-code">CS</div>
-      <div class="domain-card-name">
-        <span>Computer</span>
-        <span>Science</span>
-      </div>
-    </a>
-    <a class="dashboard-card domain-bar-card" href="/DragonLab/ml/">
-      <div class="domain-card-icon">🧠</div>
-      <div class="domain-card-code">ML</div>
-      <div class="domain-card-name">
-        <span>Machine</span>
-        <span>Learning</span>
-      </div>
-    </a>
-    <a class="dashboard-card domain-bar-card" href="/DragonLab/ds/">
-      <div class="domain-card-icon">📊</div>
-      <div class="domain-card-code">DS</div>
-      <div class="domain-card-name">
-        <span>Data</span>
-        <span>Science</span>
-      </div>
-    </a>
-    <a class="dashboard-card domain-bar-card" href="/DragonLab/reading/">
-      <div class="domain-card-icon">📚</div>
-      <div class="domain-card-code">Reading</div>
-      <div class="domain-card-name">
-        <span>Books</span>
-        <span>&amp; Essays</span>
-      </div>
-    </a>
-    <a class="dashboard-card domain-bar-card" href="/DragonLab/blog/">
-      <div class="domain-card-icon">📝</div>
-      <div class="domain-card-code">Blog</div>
-      <div class="domain-card-name">
-        <span>General</span>
-        <span>Posts</span>
-      </div>
-    </a>
-    <a class="dashboard-card domain-bar-card" href="/DragonLab/research/">
-      <div class="domain-card-icon">🔬</div>
-      <div class="domain-card-code">Research</div>
-      <div class="domain-card-name">
-        <span>Math</span>
-        <span>Modeling</span>
-      </div>
-    </a>
-    <a class="dashboard-card domain-bar-card" href="/DragonLab/econ/">
-      <div class="domain-card-icon">📈</div>
-      <div class="domain-card-code">Econ</div>
-      <div class="domain-card-name">
-        <span>Economics</span>
-      </div>
-    </a>
+    {DOMAINS.map(d => {
+      const words = d.desc.split(" ");
+      const mid = Math.ceil(words.length / 2);
+      const line1 = words.slice(0, mid).join(" ");
+      const line2 = words.slice(mid).join(" ");
+      return (
+        <a class="dashboard-card domain-bar-card" href={`/DragonLab/${d.key}/`}>
+          <div class="domain-card-icon">{d.icon}</div>
+          <div class="domain-card-code">{d.name}</div>
+          <div class="domain-card-name">
+            <span>{line1}</span>
+            {line2 && <span>{line2}</span>}
+          </div>
+        </a>
+      );
+    })}
   </div>
 </section>

@@ -1,6 +1,6 @@
 ---
-title:  "学习笔记 计组"
-date:   2026-06-08 20:00:00 +0800
+title: 学习笔记 计组
+date: 2026-06-08
 categories: CS
 tags: Computer-Component
 ---

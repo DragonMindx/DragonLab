@@ -1,15 +1,12 @@
----
+﻿---
 import TempLayout from "../../layouts/TempLayout.astro";
 import Header from "../../components/Header.astro";
 import Sidebar from "../../components/Sidebar.astro";
 import Footer from "../../components/Footer.astro";
-import { getCollection, type CollectionKey } from "astro:content";
+import { DOMAIN_KEYS } from "../../data/domains";
+import { safeGetCollection } from "../../utils/content";
 
-async function safeGetCollection(key: CollectionKey) {
-  try { return await getCollection(key); } catch { return [] as any[]; }
-}
-
-const collections = ["cs","ml","ds","reading","econ","research","blog"] as const;
+const collections = DOMAIN_KEYS;
 
 const allPosts = (await Promise.all(
   collections.map((c) => safeGetCollection(c))
@@ -75,3 +72,5 @@ for (const post of allPosts.slice(0, 5)) {
   </div>
   <Footer />
 </TempLayout>
+
+

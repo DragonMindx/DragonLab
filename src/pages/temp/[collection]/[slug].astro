@@ -1,4 +1,4 @@
----
+﻿---
 import TempLayout from "../../../layouts/TempLayout.astro";
 import Header from "../../../components/Header.astro";
 import Sidebar from "../../../components/Sidebar.astro";
@@ -6,17 +6,15 @@ import Footer from "../../../components/Footer.astro";
 import Giscus from "../../../components/Giscus.astro";
 import MathJax from "../../../components/MathJax.astro";
 import PostNav from "../../../components/PostNav.astro";
-import { getCollection } from "astro:content";
-
-async function safeGetCollection(key: string) {
-  try { return await getCollection(key as any); } catch { return [] as any[]; }
-}
+import { DOMAIN_KEYS } from "../../../data/domains";
+import { safeGetCollection } from "../../../utils/content";
 
 export async function getStaticPaths() {
-  const keys = ["cs","ml","ds","reading","econ","research","blog"] as const;
+  const keys = DOMAIN_KEYS;
   const paths: { params: { collection: string; slug: string } }[] = [];
   for (const k of keys) {
-    const posts = await safeGetCollection(k);
+    let posts: any[] = [];
+    posts = await safeGetCollection(k);
     for (const post of posts) {
       paths.push({ params: { collection: k, slug: post.slug } });
     }
@@ -30,7 +28,7 @@ const post = posts.find((p) => p.slug === slug);
 if (!post) return Astro.redirect("/DragonLab/404/");
 
 const all = (await Promise.all(
-  (["cs","ml","ds","reading","econ","research","blog"] as const).map((c) => safeGetCollection(c))
+  DOMAIN_KEYS.map((c) => safeGetCollection(c))
 )).flat().sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const idx = all.findIndex((p) => p.collection === collection && p.slug === slug);
@@ -73,3 +71,5 @@ const { Content } = await post.render();
   <Footer />
   {post.data.mathjax && <MathJax />}
 </TempLayout>
+
+

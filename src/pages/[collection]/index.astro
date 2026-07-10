@@ -1,0 +1,16 @@
+﻿---
+import CollectionPage from "../../components/CollectionPage.astro";
+import { DOMAIN_KEYS } from "../../data/domains";
+
+export async function getStaticPaths() {
+  return DOMAIN_KEYS.map((collection) => ({ params: { collection } }));
+}
+
+const { collection } = Astro.params as { collection: string };
+
+if (!DOMAIN_KEYS.includes(collection as any)) {
+  return Astro.redirect("/DragonLab/404/");
+}
+---
+
+<CollectionPage collection={collection} />

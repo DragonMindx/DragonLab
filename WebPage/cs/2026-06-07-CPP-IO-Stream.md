@@ -1,6 +1,6 @@
 ---
 title: 学习笔记-C++ IO流（补档）
-date: 2026-06-07 00:00:00 +0800
+date: 2026-06-07
 categories: CS
 tags:
   - CPP

@@ -1,6 +1,6 @@
 ---
-title:  "学习笔记-哈希函数（补档）"
-date:   2026-06-07 12:00:00 +0800
+title: 学习笔记-哈希函数（补档）
+date: 2026-06-07
 categories: CS
 tags: hash data-structure
 ---

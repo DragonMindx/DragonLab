@@ -1,14 +1,14 @@
----
+﻿---
 import TempLayout from "../../layouts/TempLayout.astro";
 import Header from "../../components/Header.astro";
 import Sidebar from "../../components/Sidebar.astro";
 import Footer from "../../components/Footer.astro";
-import { getCollection } from "astro:content";
+import { DOMAIN_KEYS } from "../../data/domains";
+import { safeGetCollection } from "../../utils/content";
 
-const collections = ["cs","ml","ds","reading","econ","research","blog"] as const;
 const allTags = new Map<string, { collection: string; slug: string; title: string }[]>();
-for (const c of collections) {
-  for (const post of await getCollection(c)) {
+for (const c of DOMAIN_KEYS) {
+  for (const post of await safeGetCollection(c)) {
     for (const tag of post.data.tags || []) {
       if (!allTags.has(tag)) allTags.set(tag, []);
       allTags.get(tag)!.push({ collection: c, slug: post.slug, title: post.data.title });
@@ -38,3 +38,6 @@ const sorted = [...allTags.entries()].sort((a, b) => b[1].length - a[1].length);
   </div>
   <Footer />
 </TempLayout>
+
+
+
