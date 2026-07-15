@@ -1,8 +1,9 @@
 ---
-title:  "Kaggle-Blog 4 Ames Housing"
-date:   2026-06-10 22:00:00 +0800
+title: Kaggle-Blog 4 Ames Housing
+date: 2026-06-10 22:00:00 +0800
 categories: Kaggle
-tags: ames-housing feature-engineering
+tags:
+  - Regression
 ---
 
 ### 2026/6/11

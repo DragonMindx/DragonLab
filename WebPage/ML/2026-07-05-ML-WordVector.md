@@ -1,8 +1,10 @@
 ---
-title:  "NLP World2Vector"
-date:   2026-07-05 14:00:00 +0800
+title: NLP World2Vector
+date: 2026-07-05 14:00:00 +0800
 categories: ML
-tags: word vector world2word embedding
+tags:
+  - NLP
+mathjax: true
 ---
 
 ### 2026/07/05

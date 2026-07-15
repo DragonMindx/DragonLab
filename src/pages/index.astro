@@ -67,7 +67,7 @@ const domainFeeds = await Promise.all(
                 <a class="dashboard-card" href={`/DragonLab/temp/${p.collection}/${p.slug}/`}>
                   <div class="dc-title">{p.data.title}</div>
                   <div class="dc-date">{p.data.date.toISOString().slice(0,10)}</div>
-                  {p.data.tags?.length > 0 && (
+                  {Array.isArray(p.data.tags) && p.data.tags?.length > 0 && (
                     <div class="dc-tags">
                       {p.data.tags.slice(0,2).map((t: string) => <span class="dc-tag">{t}</span>)}
                     </div>

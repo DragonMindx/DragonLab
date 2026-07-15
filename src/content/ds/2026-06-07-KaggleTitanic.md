@@ -1,8 +1,9 @@
 ---
-title:  "Kaggle-Blog 1"
-date:   2026-06-04 12:00:00 +0800
+title: Kaggle-Blog 1
+date: 2026-06-04 12:00:00 +0800
 categories: Kaggle
-tags: titanic logistic-regression
+tags:
+  - Classification
 ---
 
 ### 2026/6/7 补档之前的记录

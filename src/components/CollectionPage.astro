@@ -67,7 +67,7 @@ if (group.length) milestones.push({ date: currentDate, posts: group });
                   <div class="post-meta">
                     <span>{p.data.date.toISOString().slice(0, 10)}</span>
                     <span>&middot; {collection}</span>
-                    {p.data.tags?.length > 0 && p.data.tags.map((t: string) => (
+                    {Array.isArray(p.data.tags) && p.data.tags?.length > 0 && p.data.tags.map((t: string) => (
                       <a class="tag" href={`/DragonLab/temp/tags#${t}`}>{t}</a>
                     ))}
                   </div>

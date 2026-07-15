@@ -1,9 +1,10 @@
 ---
-title:  "Kaggle-Blog 2 Ames Housing"
-date:   2026-06-07 19:00:00 +0800
+title: Kaggle-Blog 2 Ames Housing
+date: 2026-06-07 19:00:00 +0800
 categories: Kaggle
-tags: ames-housing feature-engineering
-mathjax: false
+tags:
+  - Regression
+mathjax: true
 ---
 
 # Ames Housing Price Prediction — Evaluation

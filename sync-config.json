@@ -8,7 +8,8 @@
     "Reading": "reading",
     "Economics": "econ",
     "Research": "research",
-    "Journal": "blog"
+    "blog": "blog",
+    "Note": "note"
   },
   "autoGit": false
 }

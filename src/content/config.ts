@@ -20,4 +20,5 @@ export const collections = {
   econ: defineCollection({ schema: postSchema }),
   research: defineCollection({ schema: postSchema }),
   blog: defineCollection({ schema: postSchema }),
+  note: defineCollection({ schema: postSchema }),
 };
