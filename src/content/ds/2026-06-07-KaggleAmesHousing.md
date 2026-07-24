@@ -3,7 +3,7 @@ title: Kaggle-Blog 2 Ames Housing
 date: 2026-06-07 19:00:00 +0800
 categories: Kaggle
 tags:
-  - Regression
+  - Kaggle
 mathjax: true
 ---
 
@@ -228,8 +228,4 @@ StandardScaler + 大幅降低 α（从 1.0 降至 0.009）使 R² 提升约 10 �
 
 ##### R²=0.8605 ± 0.0565
 
-实际上，一开始提出的热力图/交叉验证/非线性建模，被证明是：
-
-### 在ElasticNet的正则化神力下，老手工艺人还是算了
-
-乱七八糟就乱七八糟吧。AI时代人类最珍贵的品质当然包括出格了（bushi
+实际上，一开始提出的热力图/交叉验证/非线性建模，被证明是,在ML神力下，老手工艺人还是算了（

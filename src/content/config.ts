@@ -10,6 +10,9 @@ const postSchema = z.object({
   title: z.string(),
   date: dateSchema,
   tags: z.any().transform(v => Array.isArray(v) ? v.map(String) : typeof v === 'string' ? [v] : []).default([]),
+  contentType: z.enum(["markdown", "pdf"]).default("markdown"),
+  pdfSrc: z.string().optional(),
+  pdfFile: z.string().optional(),
 }).passthrough();
 
 export const collections = {

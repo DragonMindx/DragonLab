@@ -11,6 +11,20 @@
         "tags": {
           "default": []
         },
+        "contentType": {
+          "type": "string",
+          "enum": [
+            "markdown",
+            "pdf"
+          ],
+          "default": "markdown"
+        },
+        "pdfSrc": {
+          "type": "string"
+        },
+        "pdfFile": {
+          "type": "string"
+        },
         "$schema": {
           "type": "string"
         }

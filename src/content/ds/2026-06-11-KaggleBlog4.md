@@ -3,13 +3,13 @@ title: Kaggle-Blog 4 Ames Housing
 date: 2026-06-10 22:00:00 +0800
 categories: Kaggle
 tags:
-  - Regression
+  - Kaggle
 ---
 
 ### 2026/6/11
 
 深夜十二点半，发生了有趣的事情：
-我正在进行XGB的Mk6模型，开始卷特征工程和剪枝。通过建立交互特征，然后剔除原始特征，我得到了更好的模型。但是这里有两句话让我接连**难绷**：
+我正在进行XGB的Mk6模型，开始卷特征工程和剪枝。通过建立交互特征，然后剔除原始特征，我得到了更好的模型。但是这里有两句话让我接连难绷：
 
 ![QQ_1781109000926](D:\Desktop\git%20demo\Web\assets\images\QQ_1781109000926.png)
 

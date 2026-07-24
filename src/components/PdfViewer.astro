@@ -1,0 +1,125 @@
+---
+interface Props {
+  src: string;
+  title: string;
+}
+
+const { src, title } = Astro.props as Props;
+---
+
+<section class="pdf-viewer" data-pdf-viewer data-src={src}>
+  <div class="pdf-toolbar" aria-label="PDF controls">
+    <div class="pdf-toolbar-main">
+      <span class="pdf-document-name">{title}</span>
+      <span class="pdf-page-status" data-pdf-status>Loading PDF...</span>
+    </div>
+    <div class="pdf-actions">
+      <button class="pdf-btn" type="button" data-pdf-zoom-out aria-label="Zoom out">-</button>
+      <span class="pdf-zoom-label" data-pdf-zoom>100%</span>
+      <button class="pdf-btn" type="button" data-pdf-zoom-in aria-label="Zoom in">+</button>
+      <a class="pdf-btn pdf-link" href={src} target="_blank" rel="noreferrer">Open</a>
+    </div>
+  </div>
+  <div class="pdf-pages" data-pdf-pages>
+    <div class="pdf-loading">Loading PDF...</div>
+  </div>
+  <noscript>
+    <p><a href={src}>Open PDF</a></p>
+  </noscript>
+</section>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script is:inline>
+(() => {
+  const PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  const viewers = document.querySelectorAll("[data-pdf-viewer]");
+
+  for (const viewer of viewers) {
+    const src = viewer.getAttribute("data-src");
+    const pagesEl = viewer.querySelector("[data-pdf-pages]");
+    const statusEl = viewer.querySelector("[data-pdf-status]");
+    const zoomEl = viewer.querySelector("[data-pdf-zoom]");
+    const zoomIn = viewer.querySelector("[data-pdf-zoom-in]");
+    const zoomOut = viewer.querySelector("[data-pdf-zoom-out]");
+    let pdfDoc = null;
+    let scale = 1.15;
+    let renderToken = 0;
+
+    const setStatus = (text) => {
+      if (statusEl) statusEl.textContent = text;
+    };
+
+    const setZoom = () => {
+      if (zoomEl) zoomEl.textContent = `${Math.round(scale * 100)}%`;
+    };
+
+    const renderPage = async (pageNumber, token) => {
+      const page = await pdfDoc.getPage(pageNumber);
+      if (token !== renderToken) return;
+
+      const viewport = page.getViewport({ scale });
+      const shell = document.createElement("div");
+      shell.className = "pdf-page-shell";
+      shell.style.width = `${viewport.width}px`;
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d", { alpha: false });
+      const pixelRatio = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(viewport.width * pixelRatio);
+      canvas.height = Math.floor(viewport.height * pixelRatio);
+      canvas.style.width = `${viewport.width}px`;
+      canvas.style.height = `${viewport.height}px`;
+
+      const pageLabel = document.createElement("div");
+      pageLabel.className = "pdf-page-number";
+      pageLabel.textContent = `${pageNumber} / ${pdfDoc.numPages}`;
+
+      shell.append(canvas, pageLabel);
+      pagesEl.append(shell);
+
+      await page.render({
+        canvasContext: context,
+        viewport,
+        transform: pixelRatio === 1 ? null : [pixelRatio, 0, 0, pixelRatio, 0, 0],
+      }).promise;
+    };
+
+    const renderAll = async () => {
+      if (!pdfDoc || !pagesEl) return;
+      const token = ++renderToken;
+      pagesEl.replaceChildren();
+      setZoom();
+      setStatus(`Rendering ${pdfDoc.numPages} pages`);
+      for (let pageNumber = 1; pageNumber <= pdfDoc.numPages; pageNumber += 1) {
+        await renderPage(pageNumber, token);
+      }
+      if (token === renderToken) setStatus(`${pdfDoc.numPages} pages`);
+    };
+
+    const load = async () => {
+      try {
+        if (!window.pdfjsLib) throw new Error("PDF.js failed to load.");
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+        setZoom();
+        pdfDoc = await window.pdfjsLib.getDocument(src).promise;
+        await renderAll();
+      } catch (error) {
+        console.error(error);
+        setStatus("PDF failed to load");
+        pagesEl.innerHTML = `<div class="pdf-loading">PDF failed to load. <a href="${src}">Open the file directly</a>.</div>`;
+      }
+    };
+
+    zoomIn?.addEventListener("click", () => {
+      scale = Math.min(2, Number((scale + 0.15).toFixed(2)));
+      renderAll();
+    });
+    zoomOut?.addEventListener("click", () => {
+      scale = Math.max(0.65, Number((scale - 0.15).toFixed(2)));
+      renderAll();
+    });
+
+    load();
+  }
+})();
+</script>

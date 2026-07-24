@@ -4,7 +4,8 @@ import Header from "../../../components/Header.astro";
 import Sidebar from "../../../components/Sidebar.astro";
 import Footer from "../../../components/Footer.astro";
 import Giscus from "../../../components/Giscus.astro";
-import MathJax from "../../../components/MathJax.astro";
+// import MathJax from "../../../components/MathJax.astro";
+import PdfViewer from "../../../components/PdfViewer.astro";
 import PostNav from "../../../components/PostNav.astro";
 import { DOMAIN_KEYS } from "../../../data/domains";
 import { safeGetCollection } from "../../../utils/content";
@@ -35,7 +36,8 @@ const idx = all.findIndex((p) => p.collection === collection && p.slug === slug)
 const prev = idx > 0 ? all[idx - 1] : null;
 const next = idx < all.length - 1 ? all[idx + 1] : null;
 
-const { Content } = await post.render();
+const isPdfPost = post.data.contentType === "pdf" && typeof post.data.pdfSrc === "string";
+const { Content } = isPdfPost ? { Content: null } : await post.render();
 ---
 
 <TempLayout title={`${post.data.title} | DragonLab`}>
@@ -56,7 +58,11 @@ const { Content } = await post.render();
           )}
         </header>
         <div class="article-content">
-          <Content />
+          {isPdfPost ? (
+            <PdfViewer src={post.data.pdfSrc} title={post.data.title} />
+          ) : (
+            <Content />
+          )}
         </div>
       </article>
       <PostNav
@@ -69,7 +75,7 @@ const { Content } = await post.render();
     <Sidebar posts={all.slice(0, 5).map((p) => ({ url: `/DragonLab/temp/${p.collection}/${p.slug}/`, title: p.data.title }))} />
   </div>
   <Footer />
-  {post.data.mathjax && <MathJax />}
+  {/*!isPdfPost && post.data.mathjax && <MathJax />*/}
 </TempLayout>
 
 

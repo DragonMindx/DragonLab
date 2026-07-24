@@ -1,12 +1,12 @@
 {
-  "vaultPath": "D:/Desktop/git demo/Web V2/WebPage",
-  "websiteContentPath": "D:/Desktop/git demo/Web V2/src/content",
+  "vaultPath": "E:\\Project Files\\git demo\\Web V2\\WebPage",
+  "websiteContentPath": "E:\\Project Files\\git demo\\Web V2\\src\\content",
   "mapping": {
     "CS": "cs",
     "ML": "ml",
     "DS": "ds",
     "Reading": "reading",
-    "Economics": "econ",
+    "Econ": "econ",
     "Research": "research",
     "blog": "blog",
     "Note": "note"
