@@ -82,7 +82,7 @@ E30  train_loss:0.0413  train_acc:0.9884  val_loss:1.1202  val_acc:0.7881  grad_
 
 与此同时我还记录到了非常典型的overfitting曲线
 
-![[training_plot.png]]
+![training_plot](/DragonLab/images/training_plot.png)
 
 此刻过拟合具象化了
 

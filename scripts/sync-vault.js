@@ -9,6 +9,7 @@ const config = JSON.parse(fs.readFileSync(path.join(ROOT, "sync-config.json"), "
 const { vaultPath, websiteContentPath, mapping } = config;
 const publicRoot = path.join(ROOT, "public");
 const base = config.base ?? "/DragonLab";
+const IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif", ".svg"]);
 
 function escapeYamlString(value) {
   return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
@@ -29,6 +30,92 @@ function metadataFromPdfName(file) {
   const titleSource = dateMatch?.[2] ?? rawName;
   const title = titleSource.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim() || rawName;
   return { date, title };
+}
+
+function isImageFile(file) {
+  return IMAGE_EXTENSIONS.has(path.extname(file).toLowerCase());
+}
+
+function publicImageUrl(fileName) {
+  return `${base}/images/${encodeURI(fileName).replace(/#/g, "%23")}`;
+}
+
+function copyImageIfFound(filePath, copiedImages) {
+  if (!filePath || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) return null;
+  if (!isImageFile(filePath)) return null;
+
+  const fileName = path.basename(filePath);
+  const destFile = path.join(publicRoot, "images", fileName);
+  fs.mkdirSync(path.dirname(destFile), { recursive: true });
+  const srcStat = fs.statSync(filePath);
+  const needsCopy = !fs.existsSync(destFile) || fs.statSync(destFile).mtimeMs < srcStat.mtimeMs || fs.statSync(destFile).size !== srcStat.size;
+  if (needsCopy) {
+    fs.copyFileSync(filePath, destFile);
+    copiedImages.push(`images/${fileName}`);
+  }
+  return publicImageUrl(fileName);
+}
+
+function resolveVaultImage(target, currentDir) {
+  const normalized = target.trim().split("|")[0].trim();
+  if (!normalized) return null;
+  const decoded = decodeURI(normalized);
+  const candidates = [];
+
+  if (path.isAbsolute(decoded)) {
+    candidates.push(decoded);
+    candidates.push(path.join(vaultPath, "images", path.basename(decoded)));
+  } else {
+    candidates.push(path.resolve(currentDir, decoded));
+    candidates.push(path.join(vaultPath, "images", decoded));
+    candidates.push(path.join(vaultPath, decoded));
+    candidates.push(path.join(vaultPath, "images", path.basename(decoded)));
+    candidates.push(path.join(vaultPath, path.basename(decoded)));
+  }
+
+  return candidates.find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile()) ?? null;
+}
+
+function rewriteImageLinks(markdown, currentDir, copiedImages) {
+  let next = markdown;
+
+  next = next.replace(/!\[\[([^\]]+)\]\]/g, (match, target) => {
+    const resolved = resolveVaultImage(target, currentDir);
+    if (!resolved) return match;
+    const alt = path.basename(target.split("|")[1]?.trim() || resolved, path.extname(resolved));
+    return `![${alt}](${copyImageIfFound(resolved, copiedImages)})`;
+  });
+
+  next = next.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, target) => {
+    const cleaned = target.trim();
+    if (/^https?:\/\//i.test(cleaned) || cleaned.startsWith(`${base}/`)) return match;
+
+    if (cleaned.startsWith("/Learning-Blog/assets/images/")) {
+      const fileName = path.basename(cleaned);
+      const resolved = resolveVaultImage(fileName, currentDir);
+      const url = resolved ? copyImageIfFound(resolved, copiedImages) : publicImageUrl(fileName);
+      return `![${alt}](${url})`;
+    }
+
+    const resolved = resolveVaultImage(cleaned, currentDir);
+    if (!resolved) return match;
+    return `![${alt}](${copyImageIfFound(resolved, copiedImages)})`;
+  });
+
+  return next;
+}
+
+function syncGlobalImages() {
+  const copied = [];
+  const imageDirs = [path.join(vaultPath, "images"), vaultPath];
+  for (const dir of imageDirs) {
+    if (!fs.existsSync(dir)) continue;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (!entry.isFile() || !isImageFile(entry.name)) continue;
+      copyImageIfFound(path.join(dir, entry.name), copied);
+    }
+  }
+  return copied;
 }
 
 function copyPdfPosts({ src, dest, vaultDir, collection, vaultMdFiles }) {
@@ -80,7 +167,7 @@ function copyPdfPosts({ src, dest, vaultDir, collection, vaultMdFiles }) {
 }
 
 export function sync() {
-  const result = { copied: [], deleted: [], skipped: [], bundles: [], pdf: [] };
+  const result = { copied: [], deleted: [], skipped: [], images: syncGlobalImages(), bundles: [], pdf: [] };
   for (const [vaultDir, contentDirName] of Object.entries(mapping)) {
     const src = path.join(vaultPath, vaultDir);
     const dest = path.join(websiteContentPath, contentDirName);
@@ -131,12 +218,11 @@ export function sync() {
         continue;
       }
       const srcStat = fs.statSync(srcFile);
-      const needsCopy = !fs.existsSync(destFile) || fs.statSync(destFile).mtimeMs < srcStat.mtimeMs;
+      const copiedImages = [];
+      const fixed = rewriteImageLinks(content, path.dirname(srcFile), copiedImages);
+      result.images.push(...copiedImages);
+      const needsCopy = !fs.existsSync(destFile) || fs.statSync(destFile).mtimeMs < srcStat.mtimeMs || fs.readFileSync(destFile, "utf-8") !== fixed;
       if (needsCopy) {
-        const fixed = content.replace(
-          /!\[([^\]]*)\]\(\.\.\/images\//g,
-          `![$1](${base}/images/`
-        );
         fs.writeFileSync(destFile, fixed);
         result.copied.push(`${vaultDir}/${file} -> ${contentDirName}/${file}`);
       }
