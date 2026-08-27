@@ -312,7 +312,30 @@ html.dark .profile-avatar::before { opacity:1; }
 .motto { font-style:italic; font-size:1.3rem; color:var(--color-accent); font-weight:600; }
 
 /* ===== Dashboard ===== */
-.dashboard-status { text-align:center; padding:20px 24px; font-size:1rem; }
+.dashboard-status {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px 14px;
+  align-items:center;
+  padding:18px 20px;
+  font-size:1rem;
+}
+.dashboard-status-item {
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  color:var(--color-text);
+  font-weight:600;
+  line-height:1.35;
+  text-align:center;
+}
+.dashboard-status-emoji {
+  flex:0 0 auto;
+  font-size:1.25rem;
+  line-height:1;
+}
 .section-header { display:flex; justify-content:space-between; align-items:center; margin:20px 0 8px; padding:8px 12px; background:var(--color-glass); border-radius:var(--radius-sm); border:1px solid var(--color-glass-border); }
 .section-header h2 { font-size:1.1rem; font-weight:700; }
 .section-header h2 small { font-weight:400; margin-left:6px; }

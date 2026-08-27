@@ -13,6 +13,11 @@ import statusData from "../data/status.json";
 import DomainBar from "../components/DomainBar.astro";
 import { DOMAINS } from "../data/domains";
 const status = { emoji: "📢", text: "Welcome to DragonLab", ...statusData };
+const statusItems = String(status.text || "Welcome to DragonLab")
+  .split("·")
+  .map(item => item.trim())
+  .filter(Boolean)
+  .slice(0, 6);
 
 // Gather all posts for recent activity & domain feeds
 const allPosts = (await Promise.all(
@@ -37,8 +42,12 @@ const domainFeeds = await Promise.all(
       <main class="content-area">
         <!-- Status Banner -->
         <div class="card dashboard-status">
-          <span style="font-size:1.3rem;margin-right:8px;">{status.emoji || "📢"}</span>
-          <span style="color:var(--color-text);font-weight:600;">{status.text || "Welcome to DragonLab"}</span>
+          {statusItems.map((item, index) => (
+            <span class="dashboard-status-item">
+              {index === 0 && <span class="dashboard-status-emoji">{status.emoji || "📢"}</span>}
+              <span>{item}</span>
+            </span>
+          ))}
         </div>
 
         <!-- Recent Activity -->
